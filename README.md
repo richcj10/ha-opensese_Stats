@@ -17,7 +17,7 @@ add-on automatically.
 ## Install
 
 1. Home Assistant: **Settings → Add-ons → Add-on Store → ⋮ → Repositories**, add
-   `https://github.com/richcj10/ha-opnsense-stats`.
+   `https://github.com/richcj10/ha-opensese_Stats`.
 2. Install **OPNsense Stats**, set `host`, `api_key` and `api_secret` on the **Configuration** tab, and start it.
 3. Requires the Mosquitto broker add-on (MQTT credentials are taken from it automatically);
    to use another broker, set `mqtt_host`, `mqtt_user` and `mqtt_password`.
