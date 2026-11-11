@@ -222,13 +222,30 @@ class Poller:
     # -- slow data
     def slow_poll(self, now: float) -> None:
         s: Dict[str, Any] = {}
+        names: Dict[str, str] = {}
+        # weakest first: Unbound host overrides, then Kea reservations, then the names clients send in leases
+        try:
+            for x in self.api.get("unbound/settings/search_host_override?rowCount=-1").get("rows", []):
+                if x.get("rr") == "A" and x.get("server") and x.get("hostname") and x.get("enabled", "1") == "1":
+                    names[x["server"]] = x["hostname"]
+        except Exception as e:
+            log.debug("host overrides: %s", e)
+        try:
+            for x in self.api.get("kea/dhcpv4/search_reservation?rowCount=-1").get("rows", []):
+                if x.get("ip_address") and x.get("hostname"):
+                    names[x["ip_address"]] = x["hostname"]
+        except Exception as e:
+            log.debug("reservations: %s", e)
         try:
             leases = self.api.get("kea/leases4/search?rowCount=-1").get("rows", [])
-            self.names = {x["address"]: x.get("hostname") or "" for x in leases if x.get("address")}
+            for x in leases:
+                if x.get("address") and x.get("hostname"):
+                    names[x["address"]] = x["hostname"]
             self.macs = {x["address"]: x.get("mac_info") or "" for x in leases if x.get("address")}
             s["leases"] = len(leases)
         except Exception as e:
             log.debug("leases: %s", e)
+        self.names = names
         try:
             tot = self.api.get("unbound/diagnostics/stats")["data"]["total"]
             q = int(tot["num"]["queries"])

@@ -3,7 +3,7 @@
 Polls an OPNsense firewall's API and publishes it to Home Assistant as the **OPNsense Stats** MQTT device:
 
 - WAN / LAN throughput in Mbit/s (from the interface byte counters), link speed, errors and drops
-- Top talkers: the busiest LAN hosts (named from Kea DHCP leases) and remote hosts (reverse DNS), with
+- Top talkers: the busiest LAN hosts (named from Kea leases, Kea reservations and Unbound host overrides) and remote hosts (reverse DNS), with
   download / upload rates
 - Gateways: status, latency, jitter and packet loss
 - Packet filter: state count and limit, new states per second, rule matches per second
@@ -25,7 +25,7 @@ add-on automatically.
 ## Setup
 
 In OPNsense, create an API key (System → Access → Users → API keys) and enter it as `api_key` /
-`api_secret`. The key needs read access to Diagnostics, Gateways, Unbound and Kea.
+`api_secret`. The key needs read access to Diagnostics, Gateways, Unbound (incl. host overrides) and Kea (leases + reservations).
 
 The top-talkers call samples live traffic for a few seconds, so keep `poll_interval` at 10 s or more.
 
