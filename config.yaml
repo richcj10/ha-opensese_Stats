@@ -1,0 +1,48 @@
+name: "OPNsense Stats"
+version: "1.0.0"
+slug: "opnsense_stats"
+description: "Live OPNsense throughput, top talkers, DNS (Unbound) statistics, gateway quality and firewall states, published to Home Assistant via MQTT"
+startup: services
+boot: auto
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+
+host_network: true
+hassio_api: true
+services:
+  - mqtt:need
+
+options:
+  host: "192.168.1.1"
+  api_key: ""
+  api_secret: ""
+  verify_ssl: false
+  poll_interval: 10
+  slow_interval: 60
+  wan_interface: "wan"
+  lan_interface: "lan"
+  wan_gateway: "WAN_DHCP"
+  strip_domain: ""
+  log_level: "INFO"
+
+schema:
+  host: str
+  api_key: password
+  api_secret: password
+  verify_ssl: bool
+  poll_interval: int(5,)
+  slow_interval: int(30,)
+  wan_interface: str
+  lan_interface: str
+  wan_gateway: str
+  strip_domain: str?
+  mqtt_host: str?
+  mqtt_port: port?
+  mqtt_user: str?
+  mqtt_password: password?
+  log_level: list(DEBUG|INFO|WARNING|ERROR)?
